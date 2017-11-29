@@ -195,6 +195,38 @@ AttritionRate.Percent = round(AttritionCount.Total / EmployeeCount.Total, 2) * 1
 ## 3 - Identify 3-4 Attrition Rate factors
 ##############################################################################
 
+
+## We can create mini pivot tables that allow us to calculate a percentage for each category within a given variable.
+## For example we can build a table that shows us the attrition rate of each BusinessTravel group as seen below:
+
+library(tidyr)
+library(dplyr)
+
+### Read data into R
+HR <- read.csv("CaseStudy2.csv")
+
+## Note: There is no need to convert yes and no to 1 and 0
+
+### Turn desired variables into a table
+HRtable <- table(HR$BusinessTravel, HR$Attrition)
+
+#Obtain the rate of attrition for each group
+round(prop.table(HRtable,1),2)
+
+
+### Use the comments below if row% is not desired
+### for cell %
+## round(prop.table(DF$NAME),2)
+
+### for row %
+## round(prop.table(DF$NAME,1),2)
+
+### for column %
+## round(prop.table(DF$NAME,2),2)
+
+
+## If we wanted to include something like hourly rate, even though we don't at this point, we can still use the above structure and then we need to find a way to group the data within the table. 
+
 ##############################################################################
 ## 4 - Identify 3-4 interesting Job Specific Trends
 ##############################################################################
