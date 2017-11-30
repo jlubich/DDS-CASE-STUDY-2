@@ -38,7 +38,7 @@
 library(plyr)
 library(dplyr)
 library(binr)
-
+library(ggplot2)
 
 ## Set the WD to where the R file is located
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -113,14 +113,37 @@ labels <- c("18-24", "25-34", "35-44", "45-54", "55-64", "65+")
 TalentData$Age.Bin <- cut(TalentData$Age, breaks, include.lowest = T, right=FALSE, labels=labels)
 
 # set up boundaries for intervals/bins
+breaks <- c(0,5,10,15,20,25,30,35,40,Inf)
+# specify interval/bin labels
+labels <- c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39", "40+")
+# bucketing data points into bins
+TalentData$DistanceFromHome.Bin <- cut(TalentData$DistanceFromHome, breaks, include.lowest = T, right=FALSE, labels=labels)
 
+# set up boundaries for intervals/bins
+breaks <- c(0,3,6,11,21,Inf)
+# specify interval/bin labels
+labels <- c("0-1", "2-5", "6-10", "11-20", "20+")
+# bucketing data points into bins
+TalentData$YearsAtCompany.Bin <- cut(TalentData$YearsAtCompany, breaks, include.lowest = T, right=FALSE, labels=labels)
+
+
+# set up boundaries for intervals/bins
+breaks <- c(0,3,6,11,21,Inf)
+# specify interval/bin labels
+labels <- c("0-1", "2-5", "6-10", "11-20", "20+")
+# bucketing data points into bins
+TalentData$TotalWorkingYears.Bin <- cut(TalentData$TotalWorkingYears, breaks, include.lowest = T, right=FALSE, labels=labels)
+
+# set up boundaries for intervals/bins
 breaks <- c(0,2500,5000,7500,10000,12500,15000,17500,20000,22500,25000,Inf)
 # specify interval/bin labels
 labels <- c("0-2500", "2501-5000", "5001-7500", "7501-10000","10001-12500", "12501-15000","15001-17500","17501-20000","20001-22500","22501-25000","25000+")
 # bucketing data points into bins
 TalentData$MonthlyRate.Bin <- cut(TalentData$MonthlyRate, breaks, include.lowest = T, right=FALSE, labels=labels)
 ac <- table(TalentData$MonthlyRate.Bin)
-barplot(ac)
+
+
+### barplot(ac)
 
 
 
@@ -138,43 +161,7 @@ bins.quantiles(TalentData$Age, 8, 8)
 
 
 ?cut2split(TalentData, cut2(TalentData$Age, g=10))
-  
-# 
-# Education	1 'Below College'
-# 2 'College'
-# 3 'Bachelor'
-# 4 'Master'
-# 5 'Doctor'
-# 
-# EnvironmentSatisfaction	1 'Low'
-# 2 'Medium'
-# 3 'High'
-# 4 'Very High'
-# 
-# JobInvolvement	1 'Low'
-# 2 'Medium'
-# 3 'High'
-# 4 'Very High'
-# 
-# JobSatisfaction	1 'Low'
-# 2 'Medium'
-# 3 'High'
-# 4 'Very High'
-# 
-# PerformanceRating	1 'Low'
-# 2 'Good'
-# 3 'Excellent'
-# 4 'Outstanding'
-# 
-# RelationshipSatisfaction	1 'Low'
-# 2 'Medium'
-# 3 'High'
-# 4 'Very High'
-# 
-# WorkLifeBalance	1 'Bad'
-# 2 'Good'
-# 3 'Better'
-# 4 'Best'
+ 
 
 
 ##############################################################################
@@ -237,8 +224,19 @@ fun.AttritionRate <- function(input.table, group.by.column) {
 }
 
 ## Choose the columns which make sense
-ColumnsToAnalyze <- c(grep("*Label", names(TalentData)), grep("*Bin", names(TalentData)))
-#ColumnsToAnalyze <- c(1:10)
+ColumnsToAnalyze <- c(
+  which( colnames(TalentData)=="NumberOfCompaniesWorked" ),
+  which( colnames(TalentData)=="BusinessTravel" ),
+  which( colnames(TalentData)=="Department" ),
+  which( colnames(TalentData)=="EducationField" ),
+  which( colnames(TalentData)=="Gender" ),
+  which( colnames(TalentData)=="MaritalStatus" ),
+  which( colnames(TalentData)=="JobRole" ),
+  which( colnames(TalentData)=="OverTime" ),
+  grep("*Label", names(TalentData)), 
+  grep("*Bin", names(TalentData))
+)
+
 
 #TalentData <- as_tibble(TalentData)
 
@@ -259,6 +257,13 @@ for(i in ColumnsToAnalyze){
 
 ## Create a single data frame out of all of the detail results
 big_data = do.call(rbind, Attrition.List)
+
+## Plot
+ggplot(data = big_data, mapping = aes(x = CategoryVar, y = AttritionRate)) + 
+  geom_bar(stat="identity") + 
+  geom_hline(yintercept = .16) + 
+  geom_text(aes(label=AttritionCount), vjust=1.6, color="white", size=3.5)+
+  facet_wrap(~ColumnName, scales = 'free_x')
 
 ### Use the comments below if row% is not desired
 ### for cell %
