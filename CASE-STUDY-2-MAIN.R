@@ -135,9 +135,9 @@ labels <- c("0-1", "2-5", "6-10", "11-20", "20+")
 TalentData$TotalWorkingYears.Bin <- cut(TalentData$TotalWorkingYears, breaks, include.lowest = T, right=FALSE, labels=labels)
 
 # set up boundaries for intervals/bins
-breaks <- c(0,2500,5000,7500,10000,12500,15000,17500,20000,22500,25000,Inf)
+breaks <- c(0,5000,10000,15000,20000,25000,Inf)
 # specify interval/bin labels
-labels <- c("0-2500", "2501-5000", "5001-7500", "7501-10000","10001-12500", "12501-15000","15001-17500","17501-20000","20001-22500","22501-25000","25000+")
+labels <- c("0-5000", "5001-10000","10001-15000","15001-20000","20001-25000","25000+")
 # bucketing data points into bins
 TalentData$MonthlyRate.Bin <- cut(TalentData$MonthlyRate, breaks, include.lowest = T, right=FALSE, labels=labels)
 ac <- table(TalentData$MonthlyRate.Bin)
@@ -256,14 +256,28 @@ for(i in ColumnsToAnalyze){
 }  
 
 ## Create a single data frame out of all of the detail results
-big_data = do.call(rbind, Attrition.List)
+attrition_data = do.call(rbind, Attrition.List)
+
 
 ## Plot
-ggplot(data = big_data, mapping = aes(x = CategoryVar, y = AttritionRate)) + 
-  geom_bar(stat="identity") + 
+ggplot(data = attrition_data, mapping = aes(x = CategoryVar, y = AttritionRate, width=AttritionCount/100)) + 
+  geom_bar(stat="identity", position="identity") + 
   geom_hline(yintercept = .16) + 
   geom_text(aes(label=AttritionCount), vjust=1.6, color="white", size=3.5)+
-  facet_wrap(~ColumnName, scales = 'free_x')
+  #theme(axis.text.x=element_text(angle=45,vjust=0)) +  
+  facet_wrap(~ColumnName, scales = 'free_x', ncol = 6)
+
+jobrole <- attrition_data[which(big_data$ColumnName == "JobRole"),]
+
+## Plot
+ggplot(data = jobrole, mapping = aes(x = CategoryVar, y = AttritionRate, width=AttritionCount/100)) + 
+  geom_bar(stat="identity", position="identity") + 
+  geom_hline(yintercept = .16) + 
+  geom_text(aes(label=AttritionCount), vjust=1.6, color="white", size=3.5)+
+  #theme(axis.text.x=element_text(angle=45,vjust=0)) +  
+  facet_wrap(~ColumnName, scales = 'free_x', ncol = 6)
+
+
 
 ### Use the comments below if row% is not desired
 ### for cell %
