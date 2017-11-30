@@ -203,7 +203,7 @@ library(tidyr)
 library(dplyr)
 
 ### Read data into R
-HR <- read.csv("CaseStudy2.csv")
+HR <- read.csv("./DATA/casestudy2-data.csv")
 
 ## Note: There is no need to convert yes and no to 1 and 0
 
@@ -213,6 +213,52 @@ HRtable <- table(HR$BusinessTravel, HR$Attrition)
 #Obtain the rate of attrition for each group
 round(prop.table(HRtable,1),2)
 
+Attrition.List <- list()
+
+for(i in names(HR)){
+  HRtable2 <- table(HR[[i]], HR$Attrition)
+  HRtable3 <- round(prop.table(HRtable2,1),2)
+  #ColumnName <- as.character(names(HR)[i])
+  #HRtable3$ColumnName <- ColumnName
+  Attrition.List[[i]] <- HRtable3
+}
+
+
+
+## Here's the magic function which computes the Attrition Rates, and Counts
+fun.AttritionRate <- function(input.table, group.by.column) {
+  input.table %>%
+    dplyr::group_by(CategoryVar = input.table[,group.by.column]) %>%
+    dplyr::summarise(
+      AttritionRate = sum(AttritionCount)/sum(EmployeeCount), 
+      AttritionCount = sum(AttritionCount),
+      EmployeeCount = sum(EmployeeCount)) %>%
+    dplyr::arrange(CategoryVar)
+}
+
+## Choose the columns which make sense
+ColumnsToAnalyze <- c(grep("*Label", names(TalentData)), grep("*Bin", names(TalentData)))
+#ColumnsToAnalyze <- c(1:10)
+
+#TalentData <- as_tibble(TalentData)
+
+## Initilize a list to hold all the attrition rate details
+Attrition.List = list()
+
+## Loop through all of the columns in TalentData and get the attrition rate details
+for(i in ColumnsToAnalyze){
+  #Get the name of the current column 
+  SummaryColumn <- names(TalentData)[i]
+  #Get the attrition rate details into a DF
+  SummaryResults <- fun.AttritionRate(TalentData, i)
+  #Concatenate the name of the current column to the details
+  SummaryResults$ColumnName <- SummaryColumn
+  #Store the details into a list with all other column details
+  Attrition.List[[i]] <- SummaryResults
+}  
+
+## Create a single data frame out of all of the detail results
+big_data = do.call(rbind, Attrition.List)
 
 ### Use the comments below if row% is not desired
 ### for cell %
