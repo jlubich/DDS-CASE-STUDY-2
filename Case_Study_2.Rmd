@@ -1,6 +1,6 @@
 ---
 title: "Case Study 2"
-author: "Y Kunar, J Lancon, J Lubich, W Holt"
+author: " W Holt, Y Kunar, J Lancon, J Lubich"
 date: "December 04, 2017"
 toc: true
 output:
@@ -17,10 +17,10 @@ output:
 
 Header 1
 ---------------
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSAnalytics is an analytics company that specializes in talent management solutions for Fortune 1000 companies. Having access to valuable demographic information obtained from employee's personnel files and workplace environmental data (Employee Surveys), DDSAnalytics executive management is interested leveraging this wealth of data, to provide additional services to their client base and assist them in improving their talent management strategies.  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSAnalytics is an analytic company that specializes in talent management solutions for Fortune 1000 companies. Having access to valuable demographic information obtained from employee's personnel files and workplace environmental data (Employee Surveys), DDSAnalytics executive management is interested leveraging this wealth of data, to provide additional services to their client base and assist them in improving their talent management strategies.  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSAnalytics' management understands the key role an excellent talent management system play in the development of any company.  Untold amounts of money and resources are spent hiring, training, and developing the most valuable asset a company has; Their Employees. The path is fraught with missteps, from hiring the 'wrong fit' personnel, not identifying and nurturing young talent, loss of productivity due to inexperienced personnel and lower profits due to excessive expenses associated with recruiting new employees.  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Purpose:** Through the use of Data Science, DDSAnalytics identified an opportunity to gain a competitive edge by helping their clients better manage their talent. Before management green lights the development of the data science department, they have tasked the data science(DS) team to conduct an analysis of existing employee data.  The executive leadership has identified predicting employee turnover as its first application for the data science initiative.
-The DS team was presented an existing dataset, to conduct an exploritory data analysis (EDA), to determine factor that leads to employee attrition. The major objectives are as follows:  
+The DS team was presented an existing data-set, to conduct an exploratory data analysis (EDA), to determine factor that leads to employee attrition. The major objectives are as follows:  
 
 * Identify and discuss the top factors that contribute to employee attrition.  
 * Determine if any job role specific trends that may exist.  
@@ -29,7 +29,7 @@ The DS team was presented an existing dataset, to conduct an exploritory data an
 
 **Dataset**
   
-* **Client Dataset:** The DS team was presente with an annimus client's employee dataset. Certain identifiyable information was removed from the dataset (employee names, company name, etc.).  The dataset contains 35 variables with 1470 observations. The variables captured both employee data (age, sex, tenure, position, wages, performance reviews, education,...) as well as workplace envionmental data (Job involvement, job satisfaction, work/life balance, travel%,...), which provides a more complete picture of the workers and their environment.  
+* **Client Dataset:** The DS team was presented with an unanimous client's employee data-set. Certain identifiable information was removed from the data-set (employee names, company name, etc.).  The data-set contains 35 variables with 1470 observations. The variables captured both employee data (age, sex, tenure, position, wages, performance reviews, education,...) as well as workplace environmental data (Job involvement, job satisfaction, work/life balance, travel%,...), which provides a more complete picture of the workers and their environment.  
 **Dataset:**  CaseStudy2Data.csv
 
 
@@ -37,7 +37,7 @@ The DS team was presented an existing dataset, to conduct an exploritory data an
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(warning = FALSE)
 ```
-```{r DirectorySet, eval=FALSE}
+```{r LibraryLoads}
 ## Initialize Directories and Loading Libraries
 library(plyr)
 library(dplyr)
@@ -46,17 +46,18 @@ library(ggplot2)
 library(knitr)
 library(kableExtra)
 library(tidyr)
-library(ggplot2)
-library(mapproj)
 library(grid)
 library(gridExtra)
-
-
+```
+```{r DirectorySett, eval=FALSE}
+## Initialize Directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data Visualization/Exploration:  The first step in the analysis process is to load the dataset and review its contents.  The best methods for this are visually looking at the data.  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Data Visualization/Exploration:**  The first step in the analysis process is to load the data-set and review its contents.  The best methods for this are visually looking at the data.  
+  
 **Fig 1.1 Variables - Classifications/Observations:** contains the variable name, variable class, and first 10 observations.  
-**Table 1.2 Summary Statistics:** contains statistical summaries of each catagort (mean, median, min/max, etc.).  This give the team a high-level understanding of what is included in the dataset.
+
+**Table 1.2 Summary Statistics:** contains statistical summaries of each category (mean, median, min/max, etc.).  This give the team a high-level understanding of what is included in the data-set.
 
 : **Fig 1.1** (Variables - Classifications/Observations)  
 ```{r DataLoading_n_Exploring}
@@ -67,7 +68,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 ## Load up the Talent Data
 TalentData <- read.csv("./DATA/casestudy2-data.csv")
-
+HR <- TalentData
 ## Review basic summary of data contents
 str(TalentData)
 ```
@@ -77,21 +78,26 @@ str(TalentData)
 SumTalentData <- summary(TalentData)
 print(SumTalentData)
 ```
-A quick review of the aummary data tables above shows some basic statistics about the company and it's employees.  
-* Attrition: 237 of 1470 = 16.1%  
-* Gender: M 882 : F 588  60%:40% split  
-* Age Range: 18 to 60 with median of 36 yrs old  
-* Years of Tenure: 0 to 40 yrs with median of 5.0 yrs  
-* Professional Company with Research & Development and Sales Roles dominating the ranks  
+A quick review of the summary data tables above shows some basic statistics about the company and it's employees.  
+
+* **Attrition:** 237 of 1470 = **16.1%**  
+* **Gender:** M 882 : F 588  60%:40% split  
+* **Age Range:** 18 to 60 with median of 36 yrs old  
+* **Years of Tenure:** 0 to 40 yrs with median of 5.0 yrs  
+* **Type of Organization:** Professional Company; Research & Development and Sales Roles dominating the ranks  
 
 With just this initial data, it is possible to begin to draw a picture of the company and it's employees.
 
 #### **Data Cleaning & Manipulation**
   
-**Data Cleaning:** Reviewing the dataset shows the data is very clean and contains very few missing observations. 
+**Data Cleaning:** After reviewing the original data-set, the data appears very well organized and complete, with very few missing observations. 
 
-**Data Manipluatoin/Munging:** 
-human readable
+**Data Manipluatoin/Munging:**
+
+**Data Catagorization:**  The data-set contains variables that are categorical in nature.  They appear to be excerpts from employee surveys and/or personnel performance reviews.  These variables are numerically rankings based (1,2,3,4) where 1 = Low, 2 = Med, etc..  A legend of what each categorical variable ranking means was included in the data-set.  
+While this format is good data entry and manipulation, it is not 'human readable' and not very informative; therefore, the team has manipulated the data-set to display the 'human readable' variable format. We created a new variable for each categorical variable transformed and labeled it with suffix *'VariableName'*.Label.  
+
+**Data Binning:**  Several variables have either continuous numerical data (Income, travel distance,..) or numerous discrete values (age,..).  To better visualize, reduce clutter, and interpret the data interpret, the team created Bins/Data-Ranges for these variables.We created a new variable for each categorical variable transformed and labeled it with suffix *'VariableName'*.Bin
 ```{r Labeling}
 ## Fix Garbled Column Name
 names(TalentData)[1] <- "Age"
@@ -143,6 +149,7 @@ TalentData$WorkLifeBalance.Label <- plyr::mapvalues(
 )
 
 
+# Age Bins#
 # set up boundaries for intervals/bins
 breaks <- c(0,25,35,45,55,65,Inf)
 # specify interval/bin labels
@@ -150,6 +157,8 @@ labels <- c("18-24", "25-34", "35-44", "45-54", "55-64", "65+")
 # bucketing data points into bins
 TalentData$Age.Bin <- cut(TalentData$Age, breaks, include.lowest = T, right=FALSE, labels=labels)
 
+
+# Distance-from-Home Bins#
 # set up boundaries for intervals/bins
 breaks <- c(0,5,10,15,20,25,30,35,40,Inf)
 # specify interval/bin labels
@@ -157,6 +166,8 @@ labels <- c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39", 
 # bucketing data points into bins
 TalentData$DistanceFromHome.Bin <- cut(TalentData$DistanceFromHome, breaks, include.lowest = T, right=FALSE, labels=labels)
 
+
+# Years at Company Bins#
 # set up boundaries for intervals/bins
 breaks <- c(0,3,6,11,21,Inf)
 # specify interval/bin labels
@@ -165,6 +176,7 @@ labels <- c("0-1", "2-5", "6-10", "11-20", "20+")
 TalentData$YearsAtCompany.Bin <- cut(TalentData$YearsAtCompany, breaks, include.lowest = T, right=FALSE, labels=labels)
 
 
+# Total-Working-Years Bins#
 # set up boundaries for intervals/bins
 breaks <- c(0,3,6,11,21,Inf)
 # specify interval/bin labels
@@ -172,6 +184,8 @@ labels <- c("0-1", "2-5", "6-10", "11-20", "20+")
 # bucketing data points into bins
 TalentData$TotalWorkingYears.Bin <- cut(TalentData$TotalWorkingYears, breaks, include.lowest = T, right=FALSE, labels=labels)
 
+
+# Monthly-Rate Bins#
 # set up boundaries for intervals/bins
 breaks <- c(0,5000,10000,15000,20000,25000,Inf)
 # specify interval/bin labels
@@ -180,38 +194,20 @@ labels <- c("0-5000", "5001-10000","10001-15000","15001-20000","20001-25000","25
 TalentData$MonthlyRate.Bin <- cut(TalentData$MonthlyRate, breaks, include.lowest = T, right=FALSE, labels=labels)
 ac <- table(TalentData$MonthlyRate.Bin)
 ```
-
-### barplot(ac)
-
-
-
-
-
-
-
-
-
-ac <- table(TalentData$EducationField)
-barplot(ac)
-
-?bins.split(TalentData$Age, 8, 0, 2000)
-bins.quantiles(TalentData$Age, 8, 8)
-
-
-?cut2split(TalentData, cut2(TalentData$Age, g=10))
- 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Baseline Analysis:**  The main focus of the EDS was employee attrition rates and what factors may be contributing factors.  
+first step in the analysis process is to load the data-set and review its contents.  The best methods for this are visually looking at the data.  
+####Baseline Attrition Rate
 
 
 ##############################################################################
 ## 2 - Establish the baseline attrition rate
 ##############################################################################
-
+```{r AttritionRate}
 EmployeeCount.Total = sum(TalentData$EmployeeCount)
 AttritionCount.Total = sum(TalentData$AttritionCount)
 
 AttritionRate.Percent = round(AttritionCount.Total / EmployeeCount.Total, 2) * 100 
-
-
+```
 
 
 
@@ -224,12 +220,8 @@ AttritionRate.Percent = round(AttritionCount.Total / EmployeeCount.Total, 2) * 1
 ## We can create mini pivot tables that allow us to calculate a percentage for each category within a given variable.
 ## For example we can build a table that shows us the attrition rate of each BusinessTravel group as seen below:
 
-library(tidyr)
-library(dplyr)
 
-### Read data into R
-HR <- read.csv("./DATA/casestudy2-data.csv")
-
+```{r}
 ## Note: There is no need to convert yes and no to 1 and 0
 
 ### Turn desired variables into a table
@@ -305,7 +297,7 @@ ggplot(data = attrition_data, mapping = aes(x = CategoryVar, y = AttritionRate, 
   #theme(axis.text.x=element_text(angle=45,vjust=0)) +  
   facet_wrap(~ColumnName, scales = 'free_x', ncol = 6)
 
-jobrole <- attrition_data[which(big_data$ColumnName == "JobRole"),]
+jobrole <- attrition_data[which(attrition_data$ColumnName == "JobRole"),]
 
 ## Plot
 ggplot(data = jobrole, mapping = aes(x = CategoryVar, y = AttritionRate, width=AttritionCount/100)) + 
@@ -337,4 +329,4 @@ ggplot(data = jobrole, mapping = aes(x = CategoryVar, y = AttritionRate, width=A
 ##############################################################################
 ## 5 Conclusions - where focused effort can get you the biggest bang for the buck
 ##############################################################################
-
+```
