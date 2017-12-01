@@ -267,7 +267,7 @@ ggplot(data = attrition_data, mapping = aes(x = CategoryVar, y = AttritionRate, 
   #theme(axis.text.x=element_text(angle=45,vjust=0)) +  
   facet_wrap(~ColumnName, scales = 'free_x', ncol = 6)
 
-jobrole <- attrition_data[which(big_data$ColumnName == "JobRole"),]
+jobrole <- attrition_data[which(attrition_data$ColumnName == "JobRole"),]
 
 ## Plot
 ggplot(data = jobrole, mapping = aes(x = CategoryVar, y = AttritionRate, width=AttritionCount/100)) + 
