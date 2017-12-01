@@ -1,48 +1,65 @@
-##############################################################################
-## CASE STUDY 2 - Attrition Analysis
-## 2017/11/26 - Jeff, Will, Yejur, Jeremy
-## -- FLOW --
-## 1 - Explore the available data and clean as necessary
-## 2 - Establish the baseline attrition rate
-## 3 - Identify 3-4 Attrition Rate factors
-## 4 - Identify 3-4 interesting Job Specific Trends
-## 5 Conclusions - where focused effort can get you the biggest bang for the buck
-##      Lack of low/med JobPerformance measure
-## IMPACT
-##############################################################################
+---
+title: "Case Study 2"
+author: "Y Kunar, J Lancon, J Lubich, W Holt"
+date: "December 04, 2017"
+toc: true
+output:
+  prettydoc::html_pretty:
+    theme: tactile
+    highlight: github
+    fig_caption: yes
+---
 
-## Executive Summary
-## 2DS analyzed DDSAnalytics' 2016 employee data and determined the top three leading factors that contributed to the organization's attrition rate of 16.12% were: VARIABLE1, VARIABLE2, VARIABLE3. 2DS based this conclusion on the variables that produced the three highest attrition rates relative to the benchmark of 16.12%. Variables that lacked a clear definition or deep understanding were ommitted, but can be included in a refrshed analysis or in any next steps. This is dependant on DDSAnalytcis providing 2DS with sufficient information. The variables ommitted from the analysis included: Daily Rate, Hourly Rate, Monthly Income, Monthly Rate. 
-##Based on these findings, 2DS recommends DDSAnalytics moves forward with a predictive model that focuses on, but is not limited to the variables mentioned above. As the model is built DDSAnalytics must consider variables that overlap and be sure to only include one. For example, age and the number of companies worked may have a strong overlap and may make it difficult for the organization to properly understand which variable is influencing attrition.
+### Project Name: EDA - Attrition Data Analysis
+### Client: DDSAnalytics
+#### Project Description: Preliminary Exploratory Data Analysis - (Employee Retention)
+##### GitHub Repository: https://github.com/jlubich/DDS-CASE-STUDY-2
 
-## Background
-## DDSAnalytics contacted 2DS to conduct an exploratory data analysis (EDA) to determine the three leading factors that contributed to attitrion. DDSAnalytics is planning to leverage the insights to approve a project that will leverage data science within the talent management market. 
+Header 1
+---------------
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSAnalytics is an analytics company that specializes in talent management solutions for Fortune 1000 companies. Having access to valuable demographic information obtained from employee's personnel files and workplace environmental data (Employee Surveys), DDSAnalytics executive management is interested leveraging this wealth of data, to provide additional services to their client base and assist them in improving their talent management strategies.  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDSAnalytics' management understands the key role an excellent talent management system play in the development of any company.  Untold amounts of money and resources are spent hiring, training, and developing the most valuable asset a company has; Their Employees. The path is fraught with missteps, from hiring the 'wrong fit' personnel, not identifying and nurturing young talent, loss of productivity due to inexperienced personnel and lower profits due to excessive expenses associated with recruiting new employees.  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Purpose:** Through the use of Data Science, DDSAnalytics identified an opportunity to gain a competitive edge by helping their clients better manage their talent. Before management green lights the development of the data science department, they have tasked the data science(DS) team to conduct an analysis of existing employee data.  The executive leadership has identified predicting employee turnover as its first application for the data science initiative.
+The DS team was presented an existing dataset, to conduct an exploritory data analysis (EDA), to determine factor that leads to employee attrition. The major objectives are as follows:  
 
-## Scope
-## 2DS was requested to condcut an EDA on the interaction of 34 variables with attrition. Additional variables were calculated to assist with the analysis. The project did not include statistical analyses, machine learning techniques, or predictive models. 2DS was also requested to report additional trends including those related to job roles.
+* Identify and discuss the top factors that contribute to employee attrition.  
+* Determine if any job role specific trends that may exist.  
+* Identify any interesting trends and/or observations  
+* Determine Next-Steps in EDS process.  
 
-## Approach
-## 2DS calculated the 2016 attrition rate within the organizaiton as 16.12% and used this as a benchmark to compare other variables. 2DS then calculated attrition rates within each variable to identify if any of the subpopulations had an attrition rate greater than the benchmark. Once all variables were examined, 2DS identified the variables that contained the three highest subpopulations. 
-
-## Key Findings
-## 2DS identified VARIABLE1, VARIABLE2, and VARIABLE3 with the three highest attrition rates within the organizaiton. VARIABLE1, VARIABLE2, and VARIABLE3 had attrition rates of XX.X%, XX.X%, XX.X% and "Yes" attrion response of XX, XX, XX. 
-## FILL IN HERE FOR ADDITIONAL INSIGHTS
+**Dataset**
+  
+* **Client Dataset:** The DS team was presente with an annimus client's employee dataset. Certain identifiyable information was removed from the dataset (employee names, company name, etc.).  The dataset contains 35 variables with 1470 observations. The variables captured both employee data (age, sex, tenure, position, wages, performance reviews, education,...) as well as workplace envionmental data (Job involvement, job satisfaction, work/life balance, travel%,...), which provides a more complete picture of the workers and their environment.  
+**Dataset:**  CaseStudy2Data.csv
 
 
-## Next Steps
-## While the percentages mentioned above represent the three highest attrition rates within DDSAnalytics, it is recommended that a statistical analysis is conducted to determine if the percentages and the number of "Yes" responses are statistically significant. If they are not significant then variable should not be considered. For example, if a variable had an attrition rate or 75% but there were only 3 "Yes" responses DDSAnalytics should not consider this a reliable variable when determining variables that may help build a predictive model.
-## 2DS also recommends that all salary information be listed as yearly income. This will allow for a future analysis that can determine if income influences attrition significantly more than other variables. Based on that new information DDSAnalytics can potentially build a stronger predictive model.
-## 2DS also recommends that DDSAnalytics begins to build and/or strengthen its abaility to integrate machine learning into its Data Science project if it is approved. This will allow for future models to be built through automation, which may reduce cost and increase return on investment.
-
-## Initialization
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+```
+```{r DirectorySet, eval=FALSE}
+## Initialize Directories and Loading Libraries
 library(plyr)
 library(dplyr)
 library(binr)
 library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(tidyr)
+library(ggplot2)
+library(mapproj)
+library(grid)
+library(gridExtra)
 
-## Set the WD to where the R file is located
+
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data Visualization/Exploration:  The first step in the analysis process is to load the dataset and review its contents.  The best methods for this are visually looking at the data.  
+**Fig 1.1 Variables - Classifications/Observations:** contains the variable name, variable class, and first 10 observations.  
+**Table 1.2 Summary Statistics:** contains statistical summaries of each catagort (mean, median, min/max, etc.).  This give the team a high-level understanding of what is included in the dataset.
 
+: **Fig 1.1** (Variables - Classifications/Observations)  
+```{r DataLoading_n_Exploring}
 ##############################################################################
 ## 1 - Explore the available data and clean as necessary
 ##############################################################################
@@ -53,8 +70,29 @@ TalentData <- read.csv("./DATA/casestudy2-data.csv")
 
 ## Review basic summary of data contents
 str(TalentData)
-summary(TalentData)
+```
 
+: **Table 1.2** (Summary Statistics)
+```{r SummaryData}
+SumTalentData <- summary(TalentData)
+print(SumTalentData)
+```
+A quick review of the aummary data tables above shows some basic statistics about the company and it's employees.  
+* Attrition: 237 of 1470 = 16.1%  
+* Gender: M 882 : F 588  60%:40% split  
+* Age Range: 18 to 60 with median of 36 yrs old  
+* Years of Tenure: 0 to 40 yrs with median of 5.0 yrs  
+* Professional Company with Research & Development and Sales Roles dominating the ranks  
+
+With just this initial data, it is possible to begin to draw a picture of the company and it's employees.
+
+#### **Data Cleaning & Manipulation**
+  
+**Data Cleaning:** Reviewing the dataset shows the data is very clean and contains very few missing observations. 
+
+**Data Manipluatoin/Munging:** 
+human readable
+```{r Labeling}
 ## Fix Garbled Column Name
 names(TalentData)[1] <- "Age"
 
@@ -62,43 +100,43 @@ names(TalentData)[1] <- "Age"
 TalentData$AttritionCount <- ifelse(TalentData$Attrition=="Yes",1,0)
 
 ## Map numerical flags to Categorical Labels
-TalentData$Education.Label <- mapvalues(
+TalentData$Education.Label <- plyr::mapvalues(
   TalentData$Education, 
   from = c(1,2,3,4,5), 
   to = c("Below College", "College", "Bachelor", "Master", "Doctor")
 )
 
-TalentData$EnvironmentSatisfaction.Label <- mapvalues(
+TalentData$EnvironmentSatisfaction.Label <- plyr::mapvalues(
   TalentData$EnvironmentSatisfaction, 
   from = c(1,2,3,4), 
   to = c("Low", "Medium", "High", "Very High")
 )
 
-TalentData$JobInvolvement.Label <- mapvalues(
+TalentData$JobInvolvement.Label <- plyr::mapvalues(
   TalentData$JobInvolvement, 
   from = c(1,2,3,4), 
   to = c("Low", "Medium", "High", "Very High")
 )
 
-TalentData$JobSatisfaction.Label <- mapvalues(
+TalentData$JobSatisfaction.Label <- plyr::mapvalues(
   TalentData$JobSatisfaction, 
   from = c(1,2,3,4), 
   to = c("Low", "Medium", "High", "Very High")
 )
 
-TalentData$PerformanceRating.Label <- mapvalues(
+TalentData$PerformanceRating.Label <- plyr::mapvalues(
   TalentData$PerformanceRating, 
   from = c(1,2,3,4), 
   to = c("Low", "Good", "Excellent", "Outstanding")
 )
 
-TalentData$RelationshipSatisfaction.Label <- mapvalues(
+TalentData$RelationshipSatisfaction.Label <- plyr::mapvalues(
   TalentData$RelationshipSatisfaction, 
   from = c(1,2,3,4), 
   to = c("Low", "Medium", "High", "Very High")
 )
 
-TalentData$WorkLifeBalance.Label <- mapvalues(
+TalentData$WorkLifeBalance.Label <- plyr::mapvalues(
   TalentData$WorkLifeBalance, 
   from = c(1,2,3,4), 
   to = c("Bad", "Good", "Better", "Best")
@@ -106,7 +144,7 @@ TalentData$WorkLifeBalance.Label <- mapvalues(
 
 
 # set up boundaries for intervals/bins
-breaks <- c(0,25,35,45,55,65,1000)
+breaks <- c(0,25,35,45,55,65,Inf)
 # specify interval/bin labels
 labels <- c("18-24", "25-34", "35-44", "45-54", "55-64", "65+")
 # bucketing data points into bins
@@ -141,7 +179,7 @@ labels <- c("0-5000", "5001-10000","10001-15000","15001-20000","20001-25000","25
 # bucketing data points into bins
 TalentData$MonthlyRate.Bin <- cut(TalentData$MonthlyRate, breaks, include.lowest = T, right=FALSE, labels=labels)
 ac <- table(TalentData$MonthlyRate.Bin)
-
+```
 
 ### barplot(ac)
 
@@ -267,7 +305,7 @@ ggplot(data = attrition_data, mapping = aes(x = CategoryVar, y = AttritionRate, 
   #theme(axis.text.x=element_text(angle=45,vjust=0)) +  
   facet_wrap(~ColumnName, scales = 'free_x', ncol = 6)
 
-jobrole <- attrition_data[which(attrition_data$ColumnName == "JobRole"),]
+jobrole <- attrition_data[which(big_data$ColumnName == "JobRole"),]
 
 ## Plot
 ggplot(data = jobrole, mapping = aes(x = CategoryVar, y = AttritionRate, width=AttritionCount/100)) + 
