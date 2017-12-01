@@ -46,14 +46,19 @@ library(ggplot2)
 library(knitr)
 library(kableExtra)
 library(tidyr)
+library(ggplot2)
+library(mapproj)
+library(grid)
+library(gridExtra)
+
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data Visualization/Exploration:  The first step in the analysis process is to load the dataset and review its contents.  The best methods for this are visually looking at the data.  
 **Fig 1.1 Variables - Classifications/Observations:** contains the variable name, variable class, and first 10 observations.  
-**Fig 1.2 Summary Statistics:** contains statistical summaries of each catagort (mean, median, min/max, etc.).  This give the team a high-level understanding of what is included in the dataset.
+**Table 1.2 Summary Statistics:** contains statistical summaries of each catagort (mean, median, min/max, etc.).  This give the team a high-level understanding of what is included in the dataset.
 
-: **Table 1.1** (Variables - Classifications/Observations)  
+: **Fig 1.1** (Variables - Classifications/Observations)  
 ```{r DataLoading_n_Exploring}
 ##############################################################################
 ## 1 - Explore the available data and clean as necessary
@@ -66,16 +71,28 @@ TalentData <- read.csv("./DATA/casestudy2-data.csv")
 ## Review basic summary of data contents
 str(TalentData)
 ```
-: **Table 1.2** (Summary Statistics)   
 
+: **Table 1.2** (Summary Statistics)
 ```{r SummaryData}
-summary(TalentData)
+SumTalentData <- summary(TalentData)
+print(SumTalentData)
 ```
+A quick review of the aummary data tables above shows some basic statistics about the company and it's employees.  
+* Attrition: 237 of 1470 = 16.1%  
+* Gender: M 882 : F 588  60%:40% split  
+* Age Range: 18 to 60 with median of 36 yrs old  
+* Years of Tenure: 0 to 40 yrs with median of 5.0 yrs  
+* Professional Company with Research & Development and Sales Roles dominating the ranks  
 
+With just this initial data, it is possible to begin to draw a picture of the company and it's employees.
 
+#### **Data Cleaning & Manipulation**
+  
+**Data Cleaning:** Reviewing the dataset shows the data is very clean and contains very few missing observations. 
 
-
-
+**Data Manipluatoin/Munging:** 
+human readable
+```{r Labeling}
 ## Fix Garbled Column Name
 names(TalentData)[1] <- "Age"
 
@@ -83,43 +100,43 @@ names(TalentData)[1] <- "Age"
 TalentData$AttritionCount <- ifelse(TalentData$Attrition=="Yes",1,0)
 
 ## Map numerical flags to Categorical Labels
-TalentData$Education.Label <- mapvalues(
+TalentData$Education.Label <- plyr::mapvalues(
   TalentData$Education, 
   from = c(1,2,3,4,5), 
   to = c("Below College", "College", "Bachelor", "Master", "Doctor")
 )
 
-TalentData$EnvironmentSatisfaction.Label <- mapvalues(
+TalentData$EnvironmentSatisfaction.Label <- plyr::mapvalues(
   TalentData$EnvironmentSatisfaction, 
   from = c(1,2,3,4), 
   to = c("Low", "Medium", "High", "Very High")
 )
 
-TalentData$JobInvolvement.Label <- mapvalues(
+TalentData$JobInvolvement.Label <- plyr::mapvalues(
   TalentData$JobInvolvement, 
   from = c(1,2,3,4), 
   to = c("Low", "Medium", "High", "Very High")
 )
 
-TalentData$JobSatisfaction.Label <- mapvalues(
+TalentData$JobSatisfaction.Label <- plyr::mapvalues(
   TalentData$JobSatisfaction, 
   from = c(1,2,3,4), 
   to = c("Low", "Medium", "High", "Very High")
 )
 
-TalentData$PerformanceRating.Label <- mapvalues(
+TalentData$PerformanceRating.Label <- plyr::mapvalues(
   TalentData$PerformanceRating, 
   from = c(1,2,3,4), 
   to = c("Low", "Good", "Excellent", "Outstanding")
 )
 
-TalentData$RelationshipSatisfaction.Label <- mapvalues(
+TalentData$RelationshipSatisfaction.Label <- plyr::mapvalues(
   TalentData$RelationshipSatisfaction, 
   from = c(1,2,3,4), 
   to = c("Low", "Medium", "High", "Very High")
 )
 
-TalentData$WorkLifeBalance.Label <- mapvalues(
+TalentData$WorkLifeBalance.Label <- plyr::mapvalues(
   TalentData$WorkLifeBalance, 
   from = c(1,2,3,4), 
   to = c("Bad", "Good", "Better", "Best")
@@ -127,7 +144,7 @@ TalentData$WorkLifeBalance.Label <- mapvalues(
 
 
 # set up boundaries for intervals/bins
-breaks <- c(0,25,35,45,55,65,1000)
+breaks <- c(0,25,35,45,55,65,Inf)
 # specify interval/bin labels
 labels <- c("18-24", "25-34", "35-44", "45-54", "55-64", "65+")
 # bucketing data points into bins
@@ -162,7 +179,7 @@ labels <- c("0-5000", "5001-10000","10001-15000","15001-20000","20001-25000","25
 # bucketing data points into bins
 TalentData$MonthlyRate.Bin <- cut(TalentData$MonthlyRate, breaks, include.lowest = T, right=FALSE, labels=labels)
 ac <- table(TalentData$MonthlyRate.Bin)
-
+```
 
 ### barplot(ac)
 
