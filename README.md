@@ -9,7 +9,7 @@
 
 ## Abstract:  
 
-DDS Analytics conducted exploratory data analysis for their clients to manage their talents. Our client's leadership was interested in taking data science initiative in order to determine factors leading to employee attrition. Our objectives included determining factors and trends leading to employee attrition and recommend interesting obswervations.
+DDS Analytics conducted exploratory data analysis for their clients to manage their talents. Our client's leadership was interested in taking data science initiative in order to determine factors leading to employee attrition. Our objectives included determining factors and trends leading to employee attrition and recommend interesting observations.
 
 ## Source
 
