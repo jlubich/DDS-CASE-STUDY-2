@@ -2,7 +2,6 @@
 title: "Case Study 2"
 author: " W Holt, Y Kunar, J Lancon, J Lubich"
 date: "December 04, 2017"
-toc: true
 output:
   prettydoc::html_pretty:
     theme: tactile
@@ -25,19 +24,19 @@ The DS team was presented an existing data-set, to conduct an exploratory data a
 * Identify and discuss the top factors that contribute to employee attrition.  
 * Determine if any job role specific trends that may exist.  
 * Identify any interesting trends and/or observations  
-* Determine Next-Steps in EDS process.  
+* Determine Next-Steps in EDA process.  
 
 **Dataset**
   
-* **Client Dataset:** The DS team was presented with an unanimous client's employee data-set. Certain identifiable information was removed from the data-set (employee names, company name, etc.).  The data-set contains 35 variables with 1470 observations. The variables captured both employee data (age, sex, tenure, position, wages, performance reviews, education,...) as well as workplace environmental data (Job involvement, job satisfaction, work/life balance, travel%,...), which provides a more complete picture of the workers and their environment.  
+* **Client Dataset:** The DS team was presented with an anonymous client's employee data-set. Certain identifiable information was removed from the data-set (employee names, company name, etc.).  The data-set contains 35 variables with 1470 observations. The variables captured both employee data (age, sex, tenure, position, wages, performance reviews, education,...) as well as workplace environmental data (Job involvement, job satisfaction, work/life balance, travel%,...), which provides a more complete picture of the workers and their environment.  
 **Dataset:**  CaseStudy2Data.csv
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(warning = FALSE)
 ```
-```{r LibraryLoads}
+```{r LibraryLoads, include=FALSE}
 ## Initialize Directories and Loading Libraries
 library(plyr)
 library(dplyr)
@@ -49,18 +48,20 @@ library(tidyr)
 library(grid)
 library(gridExtra)
 ```
-```{r DirectorySett, eval=FALSE}
+```{r DirectorySett, eval=FALSE, include=FALSE}
 ## Initialize Directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Data Visualization/Exploration:**  The first step in the analysis process is to load the data-set and review its contents.  The best methods for this are visually looking at the data.  
-  
-**Fig 1.1 Variables - Classifications/Observations:** contains the variable name, variable class, and first 10 observations.  
 
-**Table 1.2 Summary Statistics:** contains statistical summaries of each category (mean, median, min/max, etc.).  This give the team a high-level understanding of what is included in the data-set.
+***  
 
+#### **Data Visualization/Exploration:**  
+
+The first step in the analysis process is to load the data-set and review its contents.  The best methods for this are visually looking at the data.  
+
+**Table 1.1 Variables - Classifications/Observations:** contains the variable name, variable class, and first 10 observations.  
 : **Fig 1.1** (Variables - Classifications/Observations)  
-```{r DataLoading_n_Exploring}
+```{r DataLoading_n_Exploring, include=TRUE}
 ##############################################################################
 ## 1 - Explore the available data and clean as necessary
 ##############################################################################
@@ -72,8 +73,9 @@ HR <- TalentData
 ## Review basic summary of data contents
 str(TalentData)
 ```
+**Table 1.2 Summary Statistics:** contains statistical summaries of each category (mean, median, min/max, etc.).  This give the team a high-level understanding of what is included in the data-set.
 
-: **Table 1.2** (Summary Statistics)
+: **Figure 1.2** (Summary Statistics)
 ```{r SummaryData}
 SumTalentData <- summary(TalentData)
 print(SumTalentData)
@@ -88,23 +90,26 @@ A quick review of the summary data tables above shows some basic statistics abou
 
 With just this initial data, it is possible to begin to draw a picture of the company and it's employees.
 
+***
+
 #### **Data Cleaning & Manipulation**
   
-**Data Cleaning:** After reviewing the original data-set, the data appears very well organized and complete, with very few missing observations. 
-
-**Data Manipluatoin/Munging:**
-
-**Data Catagorization:**  The data-set contains variables that are categorical in nature.  They appear to be excerpts from employee surveys and/or personnel performance reviews.  These variables are numerically rankings based (1,2,3,4) where 1 = Low, 2 = Med, etc..  A legend of what each categorical variable ranking means was included in the data-set.  
-While this format is good data entry and manipulation, it is not 'human readable' and not very informative; therefore, the team has manipulated the data-set to display the 'human readable' variable format. We created a new variable for each categorical variable transformed and labeled it with suffix *'VariableName'*.Label.  
-
-**Data Binning:**  Several variables have either continuous numerical data (Income, travel distance,..) or numerous discrete values (age,..).  To better visualize, reduce clutter, and interpret the data interpret, the team created Bins/Data-Ranges for these variables.We created a new variable for each categorical variable transformed and labeled it with suffix *'VariableName'*.Bin
+**Data Cleaning:** 
+After reviewing the original data-set, the data appears very well organized and complete, with very few missing observations. 
 ```{r Labeling}
 ## Fix Garbled Column Name
 names(TalentData)[1] <- "Age"
-
+```
+**Data Manipulation/Munging:** 
+One new column has been derived to transform the Yes/No values of attrition into a count which we can use for further analysis and visualizations.
+```{r }
 ## Recode Attrition flag for counting
 TalentData$AttritionCount <- ifelse(TalentData$Attrition=="Yes",1,0)
+```
+**Data Catagorization:**  The data-set contains variables that are categorical in nature.  They appear to be excerpts from employee surveys and/or personnel performance reviews.  These variables are numerically rankings based (1,2,3,4) where 1 = Low, 2 = Med, etc..  A legend of what each categorical variable ranking means was included in the data-set.  
+While this format is good data entry and manipulation, it is not 'human readable' and not very informative; therefore, the team has manipulated the data-set to display the 'human readable' variable format. We created a new variable for each categorical variable transformed and labeled it with suffix *'VariableName'*.Label.  
 
+```{r}
 ## Map numerical flags to Categorical Labels
 TalentData$Education.Label <- plyr::mapvalues(
   TalentData$Education, 
@@ -147,6 +152,11 @@ TalentData$WorkLifeBalance.Label <- plyr::mapvalues(
   from = c(1,2,3,4), 
   to = c("Bad", "Good", "Better", "Best")
 )
+
+```
+**Data Binning:**  Several variables have either continuous numerical data (Income, travel distance,..) or numerous discrete values (age,..).  To better visualize, reduce clutter, and interpret the data interpret, the team created Bins/Data-Ranges for these variables.We created a new variable for each categorical variable transformed and labeled it with suffix *'VariableName'*.Bin
+
+```{r }
 
 
 # Age Bins#
@@ -194,14 +204,15 @@ labels <- c("0-5000", "5001-10000","10001-15000","15001-20000","20001-25000","25
 TalentData$MonthlyRate.Bin <- cut(TalentData$MonthlyRate, breaks, include.lowest = T, right=FALSE, labels=labels)
 ac <- table(TalentData$MonthlyRate.Bin)
 ```
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Baseline Analysis:**  The main focus of the EDS was employee attrition rates and what factors may be contributing factors.  
-first step in the analysis process is to load the data-set and review its contents.  The best methods for this are visually looking at the data.  
-####Baseline Attrition Rate
 
+***
 
-##############################################################################
-## 2 - Establish the baseline attrition rate
-##############################################################################
+#### **Baseline Analysis:**  
+The main focus of the EDA was employee attrition rates and what factors may be contributing factors.  
+
+**Baseline Attrition Rate:**
+Little Write up here on how we compute it....
+
 ```{r AttritionRate}
 EmployeeCount.Total = sum(TalentData$EmployeeCount)
 AttritionCount.Total = sum(TalentData$AttritionCount)
@@ -212,35 +223,7 @@ AttritionRate.Percent = round(AttritionCount.Total / EmployeeCount.Total, 2) * 1
 
 
 
-##############################################################################
-## 3 - Identify 3-4 Attrition Rate factors
-##############################################################################
-
-
-## We can create mini pivot tables that allow us to calculate a percentage for each category within a given variable.
-## For example we can build a table that shows us the attrition rate of each BusinessTravel group as seen below:
-
-
 ```{r}
-## Note: There is no need to convert yes and no to 1 and 0
-
-### Turn desired variables into a table
-HRtable <- table(HR$BusinessTravel, HR$Attrition)
-
-#Obtain the rate of attrition for each group
-round(prop.table(HRtable,1),2)
-
-Attrition.List <- list()
-
-for(i in names(HR)){
-  HRtable2 <- table(HR[[i]], HR$Attrition)
-  HRtable3 <- round(prop.table(HRtable2,1),2)
-  #ColumnName <- as.character(names(HR)[i])
-  #HRtable3$ColumnName <- ColumnName
-  Attrition.List[[i]] <- HRtable3
-}
-
-
 
 ## Here's the magic function which computes the Attrition Rates, and Counts
 fun.AttritionRate <- function(input.table, group.by.column) {
@@ -288,45 +271,109 @@ for(i in ColumnsToAnalyze){
 ## Create a single data frame out of all of the detail results
 attrition_data = do.call(rbind, Attrition.List)
 
+```
+***
 
+#### Overview of Attrition Rates by each Variable
+The following visualizations show the attrition rate of the main variables of the dataset. The height of the bars indicates the attrition percetange for that data point. The width of the bars indicates the overall number of employees who are in those categories.
+
+```{r, fig.width = 8, fig.height= 25}
 ## Plot
-ggplot(data = attrition_data, mapping = aes(x = CategoryVar, y = AttritionRate, width=AttritionCount/100)) + 
+ggplot(data = attrition_data, mapping = aes(x = CategoryVar, y = AttritionRate, width=AttritionCount/100,  fill = AttritionRate)) + 
   geom_bar(stat="identity", position="identity") + 
-  geom_hline(yintercept = .16) + 
-  geom_text(aes(label=AttritionCount), vjust=1.6, color="white", size=3.5)+
-  #theme(axis.text.x=element_text(angle=45,vjust=0)) +  
-  facet_wrap(~ColumnName, scales = 'free_x', ncol = 6)
+  scale_colour_gradient2(low = "red", mid = "white",  high = "blue", midpoint = 0, space = "Lab",  na.value = "grey50", guide = "colourbar") +
+#  scale_fill_gradient(low='darkgreen', mid='snow3', high='red', space='Lab') +
+  geom_hline(yintercept = .16, linetype="dashed", size = .5)+
+  geom_text(aes(0,.16,label = "16%", vjust = -.2, hjust = -.1), size=2.5) + 
+  geom_text(aes(label=AttritionCount), vjust=1.6, color="white", size=3.5) +
+  ylab("Percentage of Attrition") +
+  facet_wrap(~ColumnName, scales = 'free_x', ncol = 3) +
+  theme(axis.text.x=element_text(angle=90,vjust=1,hjust=1), legend.position="top", plot.title = element_text(hjust = 0.5)) +
+  ylab("Percentage of Attrition") +
+  ggtitle("Attrition Rates by Variable\n")
+
+```
+
+**Analysis of Age**
+Little Write up here on how we compute it....
+
+``` {r}
+
+age.data <- attrition_data[which(attrition_data$ColumnName == "Age.Bin"),]
+
+ggplot(data = age.data, mapping = aes(x = CategoryVar, y = AttritionRate, width=AttritionCount/100,  fill = AttritionRate)) + 
+  geom_bar(stat="identity", position="identity") + 
+  geom_hline(yintercept = .16, linetype="dashed", size = .5)+
+  geom_text(aes(0,.16,label = "16%", vjust = -.2, hjust = -.1), size=3.5) + 
+  geom_text(aes(label=paste("n=",AttritionCount)), vjust=-.2, color="navyblue", size=4) +
+  theme(axis.text.x=element_text(angle=90,vjust=1,hjust=1), plot.title = element_text(hjust = 0.5)) +
+  ylab("Percentage of Attrition") +
+  xlab("Age (Binned)") +
+  ggtitle("Attrition Rates by Age \n(n/width = sample size)")
+
+```
+
+**Analysis of Job Role**
+Little Write up here on how we compute it....
+
+``` {r}
 
 jobrole <- attrition_data[which(attrition_data$ColumnName == "JobRole"),]
 
-## Plot
-ggplot(data = jobrole, mapping = aes(x = CategoryVar, y = AttritionRate, width=AttritionCount/100)) + 
+ggplot(data = jobrole, mapping = aes(x = reorder(CategoryVar, AttritionRate), y = AttritionRate, width=AttritionCount/100,  fill = AttritionRate)) + 
   geom_bar(stat="identity", position="identity") + 
-  geom_hline(yintercept = .16) + 
-  geom_text(aes(label=AttritionCount), vjust=1.6, color="white", size=3.5)+
-  #theme(axis.text.x=element_text(angle=45,vjust=0)) +  
-  facet_wrap(~ColumnName, scales = 'free_x', ncol = 6)
+  geom_hline(yintercept = .16, linetype="dashed", size = .5)+
+  geom_text(aes(0,.16,label = "16%", vjust = -.2, hjust = -.1), size=3.5) + 
+  geom_text(aes(label=paste("n=",AttritionCount)), vjust=-.2, color="navyblue", size=4) +
+  theme(axis.text.x=element_text(angle=90,vjust=1,hjust=1), plot.title = element_text(hjust = 0.5)) +
+  ylab("Percentage of Attrition") +
+  xlab("Job Role") +
+  ggtitle("Attrition Rates by Job Role \n(n/width = sample size)")
+
+```
+
+**Analysis of Job Involvement**
+Little Write up here on how we compute it....
+
+``` {r}
+
+job.involvement <- attrition_data[which(attrition_data$ColumnName == "JobInvolvement.Label"),]
+
+job.involvement <- cbind(job.involvement, sortorder = c(3,1,2,4))
+
+ggplot(data = job.involvement, mapping = aes(x = reorder(CategoryVar, sortorder), y = AttritionRate, width=AttritionCount/100,  fill = AttritionRate)) + 
+  geom_bar(stat="identity", position="identity") + 
+  geom_hline(yintercept = .16, linetype="dashed", size = .5)+
+  geom_text(aes(0,.16,label = "16%", vjust = -.2, hjust = -.1), size=3.5) + 
+  geom_text(aes(label=paste("n=",AttritionCount)), vjust=-.2, color="navyblue", size=4) +
+  theme(axis.text.x=element_text(angle=90,vjust=1,hjust=1), plot.title = element_text(hjust = 0.5)) +
+  ylab("Percentage of Attrition") +
+  xlab("Job Involvement") +
+  ggtitle("Attrition Rates by Job Involvement \n(n/width = sample size)")
+
+```
+
+***
+#### Interesting Trends
+
+```{r}
+Job.Sat.vs.Inv <- TalentData[,c("JobInvolvement", "JobSatisfaction", "JobInvolvement.Label", "JobSatisfaction.Label", "EmployeeCount")]
+
+library(scales)
+
+ggplot(Job.Sat.vs.Inv,aes(x = reorder(JobInvolvement.Label, JobInvolvement), y = EmployeeCount,fill = reorder(JobSatisfaction.Label, -JobSatisfaction))) + 
+  geom_bar(position = "fill",stat = "identity") +
+  scale_fill_manual(values=c("#045a8d", "#2b8cbe", "#74a9cf", "#bdc9e1")) +
+  xlab("Job Involvement") +
+  ylab("100 Percent Stacked") +
+  ggtitle("Job Involvement vs Satisfaction\n100 Percent Stacked") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_continuous(labels = percent_format())
+```
+
+***
+#### Conclusion
 
 
 
-### Use the comments below if row% is not desired
-### for cell %
-## round(prop.table(DF$NAME),2)
-
-### for row %
-## round(prop.table(DF$NAME,1),2)
-
-### for column %
-## round(prop.table(DF$NAME,2),2)
-
-
-## If we wanted to include something like hourly rate, even though we don't at this point, we can still use the above structure and then we need to find a way to group the data within the table. 
-
-##############################################################################
-## 4 - Identify 3-4 interesting Job Specific Trends
-##############################################################################
-
-##############################################################################
-## 5 Conclusions - where focused effort can get you the biggest bang for the buck
-##############################################################################
 ```
