@@ -277,7 +277,128 @@ ggplot(data = jobrole, mapping = aes(x = CategoryVar, y = AttritionRate, width=A
   #theme(axis.text.x=element_text(angle=45,vjust=0)) +  
   facet_wrap(~ColumnName, scales = 'free_x', ncol = 6)
 
+library(dplyr)
+library(reshape2)
+names(TalentData)
+melt(TalentData[,c("JobInvolvement", "JobSatisfaction", "EmployeeCount")], measure.vars = "EmployeeCount")
 
+plyr
+
+TalentData$JobInvolvement.Label <- plyr::mapvalues(
+  TalentData$JobInvolvement, 
+  from = c(1,2,3,4), 
+  to = c("Low", "Medium", "High", "Very High")
+)
+
+TalentData$JobSatisfaction.Label <- plyr::mapvalues(
+  TalentData$JobSatisfaction, 
+  from = c(1,2,3,4), 
+  to = c("Low", "Medium", "High", "Very High")
+)
+
+TotalEmployees <- sum(TalentData$EmployeeCount)
+
+
+Job.Sat.vs.Inv <-
+TalentData[,c("JobInvolvement", "JobSatisfaction", "JobInvolvement.Label", "JobSatisfaction.Label", "EmployeeCount")] %>%
+  dplyr::group_by(JobInvolvement, JobSatisfaction, JobInvolvement.Label, JobSatisfaction.Label) %>%
+  dplyr::summarise(EmployeeCount = sum(EmployeeCount)) 
+
+Job.Sat.vs.Inv$Percent <- Job.Sat.vs.Inv$EmployeeCount / TotalEmployees 
+names(TalentData)
+
+JobRole.Avg.Age <-
+  TalentData[,c("JobRole", "Age", "EmployeeCount")] %>%
+  dplyr::group_by(JobRole) %>%
+  dplyr::summarise(EmployeeCount = sum(EmployeeCount), AverageAge = mean(Age)) 
+
+Employee.Performance <- TalentData[,c("EmployeeNumber", "Age", "MonthlyIncome", "JobRole")] 
+
+Employee.Performance$Age <- jitter(Employee.Performance$Age, factor = 3, amount = NULL)
+
+ggplot(data=Employee.Performance, aes(x=Age, y=MonthlyIncome, color=JobRole, fill=JobRole, shape=JobRole)) + 
+  geom_point(size=3)
+
+
+ggplot(data=JobRole.Avg.Age, aes(x=EmployeeCount, y=AverageAge, color=JobRole, fill=JobRole)) + 
+  geom_point(size=5, shape=23)
+
+
+, color=cyl
+  geom_bar(stat="identity")
+
+ggplot(data=JobRole.Avg.Age, aes(x=JobRole, y=EmployeeCount)) + 
+  geom_bar(stat="identity")
+
+  
+ggplot(data=JobRole.Avg.Age, aes(x=JobRole)) + 
+  geom_bar(aes(y=AverageAge,fill="Sales"), width=.7, stat="identity") +
+  geom_line(aes(y=EmployeeCount,group=1,linetype="Cumulative sales"))+
+  geom_point(aes(y=EmployeeCount))+
+  xlab("JobRole") + ylab("AverageAge") +
+  labs(fill="",linetype="")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5)) +
+  scale_x_discrete(limits=data[,1])
+
+
+<- TalentData[,c("JobInvolvement", "JobSatisfaction", "JobInvolvement.Label", "JobSatisfaction.Label", "EmployeeCount")]
+
+
+Job.Sat.vs.Inv
+library(ggplot2)
+ggplot(data = Job.Sat.vs.Inv, aes(JobInvolvement.Label, EmployeeCount, fill = JobSatisfaction.Label)) + 
+  geom_bar(stat="identity", position="stack")
+
+library(scales)
+
+ggplot(Job.Sat.vs.Inv,aes(x = reorder(JobInvolvement.Label, JobInvolvement), y = EmployeeCount,fill = reorder(JobSatisfaction.Label, -JobSatisfaction))) + 
+  geom_bar(position = "fill",stat = "identity") +
+  scale_fill_manual(values=c("#045a8d", "#2b8cbe", "#74a9cf", "#bdc9e1")) +
+  xlab("Job Involvement") +
+  ylab("100 Percent Stacked") +
+  ggtitle("Job Involvement vs Satisfaction\n100 Percent Stacked") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_y_continuous(labels = percent_format()) +
+  geom_text(aes(label=EmployeeCount), position="stack", colour="black")
+
+  geom_text(aes(label=EmployeeCount), vjust=-.2, color="navyblue", size=4) 
+
+  
+  
+  proportion <- proportion %>%
+    group_by(cyl) %>%
+    mutate(label_y = cumsum(pct))
+  
+  ggplot(proportion, aes(factor(cyl), pct, fill = factor(am, levels = c(1, 0)))) +
+    geom_bar(stat = "identity", color = "grey40") +
+    geom_text(aes(label = round(pct, 2), y = label_y), vjust = 1.5, color = "white") +
+    scale_fill_manual(values = c("#a1d99b", "#31a354")) +
+    labs(fill = "AM")  
+  
+
+dat <- read.table(text = "    ONE TWO THREE
+1   23  234 324
+2   34  534 12
+3   56  324 124
+4   34  234 124
+5   123 534 654",sep = "",header = TRUE)
+
+#Add an id variable for the filled regions
+library(reshape)
+datm <- melt(cbind(dat, ind = rownames(dat)), id.vars = c('ind'))
+
+library(scales)
+ggplot(datm,aes(x = variable, y = value,fill = ind)) + 
+  geom_bar(position = "fill",stat = "identity") +
+  # or:
+  # geom_bar(position = position_fill(), stat = "identity") 
+  scale_y_continuous(labels = percent_format())
+
+
+#bdc9e1
+#74a9cf
+#2b8cbe
+#045a8d
 
 ### Use the comments below if row% is not desired
 ### for cell %

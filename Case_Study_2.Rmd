@@ -356,6 +356,9 @@ ggplot(data = job.involvement, mapping = aes(x = reorder(CategoryVar, sortorder)
 ***
 #### Interesting Trends
 
+**Job Involvement vs Satisfaction**
+How do these categorical factors relate to each other?
+
 ```{r}
 Job.Sat.vs.Inv <- TalentData[,c("JobInvolvement", "JobSatisfaction", "JobInvolvement.Label", "JobSatisfaction.Label", "EmployeeCount")]
 
@@ -371,9 +374,61 @@ ggplot(Job.Sat.vs.Inv,aes(x = reorder(JobInvolvement.Label, JobInvolvement), y =
   scale_y_continuous(labels = percent_format())
 ```
 
+**Job Role ** - Average Age per Role
+How do these categorical factors relate to each other?
+
+```{r}
+
+JobRole.Avg.Age <-
+  TalentData[,c("JobRole", "Age", "EmployeeCount")] %>%
+  dplyr::group_by(JobRole) %>%
+  dplyr::summarise(EmployeeCount = sum(EmployeeCount), AverageAge = mean(Age)) 
+
+
+ggplot(data=JobRole.Avg.Age, aes(x=EmployeeCount, y=AverageAge, color=JobRole, fill=JobRole)) + 
+  geom_point(size=5, shape=23)
+
+```
+
+
+**Job Ratings ** 
+How do these categorical factors relate to each other?
+
+
+```{r}
+
+JobRole.YearsvsIncome <-
+  TalentData[,c("JobRole", "YearsInCurrentRole", "MonthlyIncome")] %>%
+  dplyr::group_by(JobRole) %>%
+  dplyr::summarise(AverageMonthlyIncome = mean(MonthlyIncome), AverageYearsInRole = mean(YearsInCurrentRole)) 
+
+
+ggplot(data=JobRole.YearsvsIncome, aes(x=AverageYearsInRole, y=AverageMonthlyIncome, color=JobRole, fill=JobRole)) + 
+  geom_point(size=5, shape=23)
+
+```
+
+
+**Job Ratings*** 
+How does the attrition patterns differ by Age, Monthly Income broken down by Job Role?
+```{r, fig.width = 8, fig.height= 10}
+
+Employee.Performance <- TalentData[,c("EmployeeNumber", "Age", "MonthlyIncome", "JobRole", "Attrition")] 
+
+Employee.Performance$Age <- jitter(Employee.Performance$Age, factor = 3, amount = NULL)
+
+
+ggplot(data=Employee.Performance, aes(x=Age, y=MonthlyIncome, shape = Attrition, color=Attrition, fill=Attrition)) + 
+  geom_point(size=2) + facet_wrap(~JobRole)
+
+```
+
+
+
+
+
+
 ***
 #### Conclusion
 
 
-
-```
