@@ -15,14 +15,16 @@ DDS Analytics conducted exploratory data analysis for their clients to manage th
 
 The dataset was provided by Dr. Faizan Javed through files section of 2DS for this case study. 
 
-## Contents
-
 ## Case Study Partners
 * Jeremy Lubich (jlubich@smu.edu)
 * Jeffery Lancon (jlancon@smu.edu)
 * William Holt (williamholt@smu.edu)
 * Yejur Singh Kunwar (ykunwar@smu.edu)
 
+## Contents
+* R Markdown with analysis
+* R HTML
+* Presentation with insights
 
 ## Data Set Information/ Definition
 
