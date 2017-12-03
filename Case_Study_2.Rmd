@@ -296,7 +296,7 @@ ggplot(data = attrition_data, mapping = aes(x = CategoryVar, y = AttritionRate, 
 ```
 
 **Analysis of Age**  
-Upon reviewing the above graphical analysis of the data set, based on attrition rates, our first category we analyzed was Attrition Rate by Employee Age Groups. The percentage of attrition values were developed by dividing the total number of attrition in an age group by the total number of employees in that age group. The width of the bars represent the portion of the total number of attrition.   
+Our first category we analyzed was Attrition Rate by Employee Age Groups. The percentage of attrition values were developed by dividing the total number of separated employees in an age group by the total number of employees in that age group. The width of the bars represent the percentage of the total number of separated employees.   
 The majority of the departed employees are within the 25-34 age bracket making up nearly 48% of all departed employees.  
 It is widely known that attrition rates for younger employees are higher than older age groups, this may be some areas of interest in future, more in-depth, analysis.
 ``` {r}
@@ -315,7 +315,7 @@ ggplot(data = age.data, mapping = aes(x = CategoryVar, y = AttritionRate, width=
 
 ```
 
-**Analysis of Job Role**
+**Analysis of Job Role**  
 The second category we analyzed was Attrition Rate by Job Role. The percentage of attrition values were developed by dividing the total number of attrition in each Job Role by the total number of employees in that Job Role. The width of the bars represent the portion of the total number of attrition.  
 The majority of the departed employees are Sales (Reps and Executives) and Laboratory Technicians representing nearly 64% of all departed employees.  
 More in-depth analysis should focus on these three categories, with special attention on the sales organization as a whole.
@@ -335,11 +335,10 @@ ggplot(data = jobrole, mapping = aes(x = reorder(CategoryVar, AttritionRate), y 
 
 ```
 
-**Analysis of Job Involvement**
-The next category we analyzed was Attrition Rate by Job Involvement. The percentage of attrition values were developed by dividing the total number of attrition by the employees corresponding Job Involvement score by the total number employee with corresponding Job Involvement scores. The width of the bars represent the portion of the total number of attrition.  
+**Analysis of Job Involvement**  
+The next category we analyzed was Attrition Rate by Job Involvement. The percentage of attrition values were developed by dividing the total number of separated employee's corresponding Job Involvement score by the total number employee with corresponding Job Involvement scores. The width of the bars represent the portion of the total number of separated employees.  
 The majority of the departed employees had High or Medium Job Involvement scores.  Of the Low Job Involvement scores, nearly 34% departed the company.  
 More in depth analysis should focus on how these score were developed and how bias may have played a role in the results.  
-
 
 ``` {r}
 
@@ -362,7 +361,7 @@ ggplot(data = job.involvement, mapping = aes(x = reorder(CategoryVar, sortorder)
 ***
 #### Interesting Trends
 
-**Job Involvement vs Satisfaction**
+**Job Involvement vs Satisfaction**  
 An analysis of categorical factors Job Involvement scores for employees vs the same employees Job Satisfaction scores, to see how they related to each other. 
 
 ```{r}
@@ -382,7 +381,6 @@ ggplot(Job.Sat.vs.Inv,aes(x = reorder(JobInvolvement.Label, JobInvolvement), y =
 **Job Role **  
 Below is a plot of the average age of separated employees categorized by their Job Role.  
 The youngest average age by Job Role is Sales Representatives at just over 30 yrs old.  This may play a part in the high 'turn-over' rate, since younger employees have a higher propensity to leave employers.  Of all the 'higher than average' turnover Job Roles, the average age of employees is less than 36 yrs old.
-How do these categorical factors relate to each other?
 ```{r}
 
 JobRole.Avg.Age <-
@@ -397,8 +395,8 @@ ggplot(data=JobRole.Avg.Age, aes(x=EmployeeCount, y=AverageAge, color=JobRole, f
 ```
 
 
-**Tenure vs Monthly Income by JobRole ** 
-We explored whether the number of years in a Job Role and the Average Monthly Income for Separated employees had any trends. Sales Representatives had the lowest tenure in their positions as well as the lowest average monthly income, followed by Laboratory Technicians with 3yrs tenure.  Both categories had high turnover percentages.
+**Tenure vs Monthly Income by JobRole **  
+We explored whether the number of years in a Job Role and the Average Monthly Income for Separated employees had any trends. Sales Representatives had the lowest tenure in their positions as well as the lowest average monthly income, followed by Laboratory Technicians with 3yrs tenure with a slightly higher monthly income. Both categories have high turnover percentages.
 ```{r}
 
 JobRole.YearsvsIncome <-
