@@ -432,14 +432,6 @@ ggplot(data=Employee.Performance, aes(x=Age, y=MonthlyIncome, shape = Attrition,
 ***
 #### Conclusion / Next Steps
 
-Validity of Income Datafields
-Reasons for Attrition
-How are Employee survey information collected.
-Bias in Employee Ratings
-
-
-
-
-
-
-
+As DDSAnalytics moves forward with a project to predict employee turnover a statistical analysis must be performed to determine the significance of the findings. DDSAnalytics must also define income variables that can be used interchangeably and have an intuitive understanding (i.e. multiplying hourly rate by hours worked equals daily rate).  
+Additional variables should also be considered, such as reason for attrition. Some of the reasons may include and not be limited to: Retirement, Career Change, Salary. DDSAnalytcis should also review the way employee surveys are built and administered in order to limit anay biases that may exist.
+The creation of a predictive model is a logical next step, but DDSAnalytics can also start building an infrastructure for machine learning and prescriptive analytics, which will be natural progressions as it expands upon its use of Data Science.
