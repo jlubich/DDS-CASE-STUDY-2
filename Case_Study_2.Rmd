@@ -95,19 +95,20 @@ With just this initial data, it is possible to begin to draw a picture of the co
 
 #### **Data Cleaning & Manipulation**
   
-**Data Cleaning:** 
+**Data Cleaning:**  
 After reviewing the original data-set, the data appears very well organized and complete, with very few missing observations. 
 ```{r Labeling}
 ## Fix Garbled Column Name
 names(TalentData)[1] <- "Age"
 ```
-**Data Manipulation/Munging:** 
+**Data Manipulation/Munging:**  
 One new column has been derived to transform the Yes/No values of attrition into a count which we can use for further analysis and visualizations.
 ```{r }
 ## Recode Attrition flag for counting
 TalentData$AttritionCount <- ifelse(TalentData$Attrition=="Yes",1,0)
 ```
-**Data Catagorization:**  The data-set contains variables that are categorical in nature.  They appear to be excerpts from employee surveys and/or personnel performance reviews.  These variables are numerically rankings based (1,2,3,4) where 1 = Low, 2 = Med, etc..  A legend of what each categorical variable ranking means was included in the data-set.  
+**Data Catagorization:**  
+The data-set contains variables that are categorical in nature.  They appear to be excerpts from employee surveys and/or personnel performance reviews.  These variables are numerically rankings based (1,2,3,4) where 1 = Low, 2 = Med, etc..  A legend of what each categorical variable ranking means was included in the data-set.  
 While this format is good data entry and manipulation, it is not 'human readable' and not very informative; therefore, the team has manipulated the data-set to display the 'human readable' variable format. We created a new variable for each categorical variable transformed and labeled it with suffix *'VariableName'*.Label.  
 
 ```{r}
@@ -155,7 +156,8 @@ TalentData$WorkLifeBalance.Label <- plyr::mapvalues(
 )
 
 ```
-**Data Binning:**  Several variables have either continuous numerical data (Income, travel distance,..) or numerous discrete values (age,..).  To better visualize, reduce clutter, and interpret the data interpret, the team created Bins/Data-Ranges for these variables.We created a new variable for each categorical variable transformed and labeled it with suffix *'VariableName'*.Bin
+**Data Binning:**  
+Several variables have either continuous numerical data (Income, travel distance,..) or numerous discrete values (age,..).  To better visualize, reduce clutter, and interpret the data interpret, the team created Bins/Data-Ranges for these variables.We created a new variable for each categorical variable transformed and labeled it with suffix *'VariableName'*.Bin
 
 ```{r }
 
@@ -211,8 +213,8 @@ ac <- table(TalentData$MonthlyRate.Bin)
 #### **Baseline Analysis:**  
 The main focus of the EDA was employee attrition rates and what factors may be contributing factors.  
 
-**Baseline Attrition Rate:**
-Little Write up here on how we compute it....
+**Baseline Attrition Rate:**  
+The attrition rate is calculated using the attrition variable; Number of Yes' divided by the total number of (Yes' + No's). 
 
 ```{r AttritionRate}
 EmployeeCount.Total = sum(TalentData$EmployeeCount)
@@ -276,7 +278,7 @@ attrition_data = do.call(rbind, Attrition.List)
 ***
 
 #### Overview of Attrition Rates by each Variable
-The following visualizations show the attrition rate of the main variables of the dataset. The height of the bars indicates the attrition percetange for that data point. The width of the bars indicates the relative overall number of employees who are in those categories.
+The following visualizations show the attrition rate of the main variables of the data-set. The height of the bars indicates the attrition percentage for that data point. The width of the bars indicates the relative overall percentage of separated employees who are in those categories.
 
 ```{r, fig.width = 8, fig.height= 25}
 ## Plot
@@ -336,7 +338,7 @@ ggplot(data = jobrole, mapping = aes(x = reorder(CategoryVar, AttritionRate), y 
 ```
 
 **Analysis of Job Involvement**  
-The next category we analyzed was Attrition Rate by Job Involvement. The percentage of attrition values were developed by dividing the total number of separated employee's corresponding Job Involvement score by the total number employee with corresponding Job Involvement scores. The width of the bars represent the portion of the total number of separated employees.  
+The next category analyzed was Attrition Rate by Job Involvement. The percentage of attrition values were developed by dividing the total number of separated employee's corresponding Job Involvement score by the total number employee with corresponding Job Involvement scores. The width of the bars represent the portion of the total number of separated employees.  
 The majority of the departed employees had High or Medium Job Involvement scores.  Of the Low Job Involvement scores, nearly 34% departed the company.  
 More in depth analysis should focus on how these score were developed and how bias may have played a role in the results.  
 
@@ -425,13 +427,9 @@ ggplot(data=Employee.Performance, aes(x=Age, y=MonthlyIncome, shape = Attrition,
 ```
 
 
-
-
-
-
 ***
 #### Conclusion / Next Steps
 
-As DDSAnalytics moves forward with a project to predict employee turnover a statistical analysis must be performed to determine the significance of the findings. DDSAnalytics must also define income variables that can be used interchangeably and have an intuitive understanding (i.e. multiplying hourly rate by hours worked equals daily rate).  
-Additional variables should also be considered, such as reason for attrition. Some of the reasons may include and not be limited to: Retirement, Career Change, Salary. DDSAnalytcis should also review the way employee surveys are built and administered in order to limit anay biases that may exist.
-The creation of a predictive model is a logical next step, but DDSAnalytics can also start building an infrastructure for machine learning and prescriptive analytics, which will be natural progressions as it expands upon its use of Data Science.
+As DDSAnalytics moves forward with a project to predict employee turnover, a statistical analysis must be performed to determine the significance of the findings. DDSAnalytics must also define income variables that can be used interchangeably and have an intuitive understanding (i.e. multiplying hourly rate by hours worked equals daily rate).  
+Additional variables should also be considered, such as reason for attrition, which may include but not be limited to: Retirement, Career Change, Salary, Termination, RIFs. Employee Exit surveys might be helpful to pin-point reason for employees voluntarily departed the company. DDSAnalytcis should also review the way employee surveys are built and administered in order to limit any biases that may exist.
+The creation of a predictive model is a logical next step, but DDSAnalytics can also start building an infrastructure for machine learning and prescriptive analytic, which will be natural progressions as it expands upon its use of Data Science.
